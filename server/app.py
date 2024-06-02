@@ -18,13 +18,30 @@ db.init_app(app)
 def index():
     return '<h1>Bakery GET API</h1>'
 
-@app.route('/bakeries')
+@app.route('/bakeries', method=['GET'])
 def bakeries():
-    return ''
+    
+    bakery = [bakery.to_dict() for bakery in Bakery.query.all()]
+
+    response = make_response(
+        bakeries,
+        200,
+    )
+
+    return response
 
 @app.route('/bakeries/<int:id>')
 def bakery_by_id(id):
-    return ''
+    bakery = Bakery.query.filter(Bakery.id == id).first()
+
+    baked_goods = [baked_goods.to_dict(-bakery.baked_goods) for bakery in bakery.all]
+    response = make_response(
+        baked_goods,
+        200
+    )
+
+    return response
+
 
 @app.route('/baked_goods/by_price')
 def baked_goods_by_price():
